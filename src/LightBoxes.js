@@ -1,4 +1,5 @@
 import React from 'react';
+import { SketchPicker } from 'react-color';
 import './LightBoxes.css';
 
 class Pixel extends React.Component {
@@ -6,7 +7,7 @@ class Pixel extends React.Component {
         super(props);
         this.state = {
             selected: false,
-            color: 'rgb(121, 195, 230)'
+            color: 'rgba(121, 195, 230, 1)'
         }
         this.click = this.click.bind(this);
         this.clearAll = this.clearAll.bind(this);
@@ -89,50 +90,35 @@ class PixelControls extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            red: 0,
-            green: 0,
-            blue: 0
+            color: {
+                r: 200,
+                g: 200,
+                b: 200,
+                a: 1
+            }
         };
         this.clear = this.clear.bind(this);
-        this.colorSubmit = this.colorSubmit.bind(this);
         this.colorChange = this.colorChange.bind(this);
     }
 
     clear() {
         this.props.parentControl('clear');
     }
-
-    colorSubmit() {
-        let newColors = 'rgb(' +
-        this.state.red.toString() + ',' +
-        this.state.green.toString() + ',' +
-        this.state.blue.toString() + ')';
+    colorChange(color) {
+        let c = color.rgb;
+        let newColors = 'rgba(' +
+        c.r.toString() + ',' +
+        c.g.toString() + ',' +
+        c.b.toString() + ',' +
+        c.a.toString() + ')';
         this.props.parentControl('color', newColors);
-    }
-    colorChange(event, color) {
-        let number = event.target.value;
-        if (!number) number = 0;
-        if (number > 255) number = 255;
-        if (number < 0) number = 0;
-        this.setState({
-            [color]: number
-        });
     }
 
     render() {
         return (//onChange passes synthetic event so i can use event and color as args
         <div>
-            <label>Red
-            <input type='number' min='0' max='255'
-            onChange={ e => this.colorChange(e, 'red')} /></label>
-            <label>Green
-            <input type='number' min='0' max='255'
-            onChange={e=>this.colorChange(e,'green')} /></label>
-            <label>Blue
-            <input type='number' min='0' max='255'
-            onChange={e=>this.colorChange(e,'blue')} /></label>
-            <button onClick={this.colorSubmit}>Enter</button>
-            <button onClick={this.clear}>Clear All</button>
+            <SketchPicker onChangeComplete={ this.colorChange} />
+            <button onClick={this.clear}>Clear Selected</button>
         </div>
         );
     }

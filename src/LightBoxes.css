@@ -14,12 +14,8 @@
     display: flex;
 }
 
-input, button {
-    height: 20px;
-    min-width: 40px;
-    margin: 6px;
-}
 button {
     height: 30px;
     min-width: 60px;
+    margin: 6px;
 }
