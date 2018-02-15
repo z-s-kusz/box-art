@@ -38,11 +38,13 @@ class Pixel extends React.Component {
 
     render() {
         let color = this.state.color;
-        let shadowStyle = this.state.selected === true ? {boxShadow: '0 0 16px red', backgroundColor: color} : {boxShadow: 'none', backgroundColor: color};
+        let outerStyle = this.state.selected === true ? {backgroundColor: 'black'} : {backgroundColor: 'rgb(245, 245, 245)'};
+        let innerStyle = this.state.selected === true ? {boxShadow: '0 0 4px 2px white', backgroundColor: color} : {boxShadow: 'none', backgroundColor: color};
         return (
-            <div onClick={this.click}>
+            <div onClick={this.click}
+            style= {outerStyle}>
                 <div className='pixel'
-                style = {shadowStyle}>
+                style = {innerStyle}>
                 </div>
             </div>
         );
@@ -115,7 +117,7 @@ class PixelControls extends React.Component {
     }
 
     render() {
-        return (//onChange passes synthetic event so i can use event and color as args
+        return (
         <div>
             <SketchPicker onChangeComplete={ this.colorChange} />
             <button onClick={this.clear}>Clear Selected</button>
