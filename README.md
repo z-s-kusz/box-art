@@ -1,8 +1,7 @@
 # How to Use Box Art
-1. Click on the boxes you want to change. Clicking them again deselects the box.
-2. Type in the color values you want for red, green, and blue ranging from 0 to 255 (values outside this range will be changed to 0 or 255).
-3. Click enter to apply the color to your selected boxes.
-4. Deselect boxes manually or press clear all to deselect all boxes.
+1. Click on the boxes you want to color. Selected boxes are highlighted in black and white. Clicking them again deselects the box.
+2. Pick your color hue and transparency level. Selected boxes will update as you change colors.
+3. Deselect boxes manually or press clear all to deselect all boxes.
 
 # Installing/Developing Box Art
 Boxart was made with Create React App https://github.com/facebook/create-react-app
@@ -16,7 +15,7 @@ Boxart was made with Create React App https://github.com/facebook/create-react-a
 * Use only vanilla CSS3 and HTML5 with full range rgb colors for the boxes.
 
 # What’s next?
-1. Add a much much better color picker than manually typing in rgb colors.
+1. Add a much much better color picker than manually typing in rgb colors. - Completed! Thanks to https://github.com/casesandberg/react-color
 2. Allow the user to further edit the boxes and the frame.
 3. Make the function used for coloring in boxes more efficient.
 4. Review the 'Reactiness' of the project to see how else this project could be achieved.
