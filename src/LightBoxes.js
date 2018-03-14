@@ -5,46 +5,21 @@ import './LightBoxes.css';
 class Pixel extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            selected: false,
-            color: 'rgba(121, 195, 230, 1)'
-        }
         this.click = this.click.bind(this);
-        this.clearAll = this.clearAll.bind(this);
-        this.colorIt = this.colorIt.bind(this);
-    }
-
-    colorIt(newColor) {
-        if (this.state.selected === false) return;
-        else {
-            this.setState({
-                color: newColor
-            });
-        }
-    }
-
-    clearAll() {
-        this.setState(state => ({
-            selected: false
-        }));
     }
 
     click() {
-        let newState = this.state.selected === true ? false : true;
-        this.setState(state => ({
-            selected: newState
-        }));
+        const newState = this.props.selected === true ? false : true;
+        this.props.clickedOneBox(this.props.id, newState);
     }
 
     render() {
-        let color = this.state.color;
-        let outerStyle = this.state.selected === true ? {backgroundColor: 'black'} : {backgroundColor: 'rgb(245, 245, 245)'};
-        let innerStyle = this.state.selected === true ? {boxShadow: '0 0 4px 2px white', backgroundColor: color} : {boxShadow: 'none', backgroundColor: color};
+        const color = this.props.color;
+        const outerStyle = this.props.selected === true ? {backgroundColor: 'black'} : {backgroundColor: 'rgb(245, 245, 245)'};
+        const innerStyle = this.props.selected === true ? {boxShadow: '0 0 4px 2px white', backgroundColor: color} : {boxShadow: 'none', backgroundColor: color};
         return (
-            <div onClick={this.click}
-            style= {outerStyle}>
-                <div className='pixel'
-                style = {innerStyle}>
+            <div onClick={this.click} style={outerStyle}>
+                <div className='pixel' style={innerStyle}>
                 </div>
             </div>
         );
@@ -54,35 +29,80 @@ class Pixel extends React.Component {
 class PixelList extends React.Component {
     constructor(props) {
         super(props);
-        this.control = this.control.bind(this);
         this.state = {
-            refs: []
-        }
+            boxes: []
+        };
+        this.clickedOneBox = this.clickedOneBox.bind(this);
+        this.clearSelected = this.clearSelected.bind(this);
+        this.setColor = this.setColor.bind(this);
     }
-    control(actionType, colors) { // used to listen for child click event
-        if (actionType === 'clear') {
-            this.state.refs.forEach((ref, i) => { // calls my ref function for each unique pixel
-                this['foo' + i].clearAll();
-            });
-        } else if (actionType === 'color') {
-            this.state.refs.forEach((ref, i) => {
-                this['foo' + i].colorIt(colors);
-            });
-        }
-    }
-    render() {
+
+    componentDidMount() {
         const pixelCount = 510;
-        const listItems = [];
-        for (let i =0; i < pixelCount; i++) {
-            this.state.refs.push( (foo) => { this['foo' + i] = foo; } );//build an array of unique refs for each pixelbox
-            listItems.push( (<Pixel key={i} ref={this.state.refs[i]}/>) );
+        let boxes = [];
+        for (let i = 0; i < pixelCount; i++) {
+            boxes.push({
+                id: i,
+                color: 'rgba(255,180,20,1)',
+                selected: false
+            });
         }
+        this.setState({
+            boxes: boxes
+        });
+    }
+
+    clickedOneBox(id, newState) {
+// seems odd, am I changing state outside of setstate function or creating a new var based on state(2nd thing is good, 1st is bad)
+        const boxes = this.state.boxes;
+        boxes[id].selected = newState;
+        this.setState({
+            boxes: boxes
+        });
+    }
+
+    clearSelected() {
+        let clearedBoxes = this.state.boxes.map(box => {
+            return ({
+                id: box.id,
+                color: box.color,
+                selected: false
+            });
+        });
+        this.setState({
+            boxes: clearedBoxes
+        });
+    }
+
+    setColor(color) {
+        let newBoxes = this.state.boxes.map(box => {
+            if (box.selected === true) {
+                return ({
+                    id: box.id,
+                    color: color,
+                    selected: box.selected
+                });
+            } else {
+                return box;
+            }
+        });
+        this.setState({
+            boxes: newBoxes
+        });
+    }
+
+    render() {
+        let boxes = this.state.boxes.map(box => {
+            return ( <Pixel key={box.id} id={box.id}
+                color={box.color} selected={box.selected}
+                clickedOneBox={this.clickedOneBox} /> );
+        });
         return (
             <div>
                 <div className='pixels-container'>
-                    {listItems}
+                    {boxes}
                 </div>
-                <PixelControls parentControl={this.control}/>
+                <PixelControls clearSelected={this.clearSelected} setColor={this.setColor} />
             </div>
         );
     }
@@ -92,47 +112,47 @@ class PixelControls extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            color: {
-                r: 200,
-                g: 200,
-                b: 200,
-                a: 1
-            }
+            r: 140,
+            g: 250,
+            b: 40,
+            a: 1
         };
         this.clear = this.clear.bind(this);
         this.colorChange = this.colorChange.bind(this);
     }
 
-    clear() {
-        this.props.parentControl('clear');
+    clear(event) {
+        event.preventDefault();
+        this.props.clearSelected();
     }
+
     colorChange(color) {
         let c = color.rgb;
+        this.setState({
+            r: c.r,
+            g: c.g,
+            b: c.b,
+            a: c.a
+        });
         let newColors = 'rgba(' +
         c.r.toString() + ',' +
         c.g.toString() + ',' +
         c.b.toString() + ',' +
         c.a.toString() + ')';
-        this.props.parentControl('color', newColors);
+        this.props.setColor(newColors);
     }
 
     render() {
         return (
-        <div>
-            <SketchPicker onChangeComplete={ this.colorChange} />
-            <button onClick={this.clear}>Clear Selected</button>
-        </div>
+            <div>
+                <SketchPicker onChangeComplete={this.colorChange} color={this.state}/>
+                <button onClick={this.clear}>Clear Selected</button>
+            </div>
         );
     }
 }
 
 class LightBoxes extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            cleared: false
-        };
-    }
     render () {
         return (
             <PixelList />
