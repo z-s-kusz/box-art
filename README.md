@@ -16,7 +16,7 @@ Boxart was made with Create React App https://github.com/facebook/create-react-a
 
 # What’s next?
 1. Add a much much better color picker than manually typing in rgb colors. - Completed! Thanks to https://github.com/casesandberg/react-color
-2. Allow the user to further edit the boxes and the frame.
+2. Allow the user to further edit the boxes and the frame. - Select All added, more to come...
 3. Make the function used for coloring in boxes more efficient. - Completed! Topmost parent is now the only component with states and uses a single update function instead of 1 per pixel.
-4. Review the 'Reactiness' of the project to see how else this project could be achieved. - Getting better (see 2)!
+4. Review the 'Reactiness' of the project to see how else this project could be achieved. - Getting better (see 3)!
 5. Move the project out of the create-react-app cli and into my own build process so I can host it and learn react build process stuff.
