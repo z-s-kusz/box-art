@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import LightBoxes from './LightBoxes';
+import LightBoxesPage from './LightBoxes';
 
 ReactDOM.render(
-    <LightBoxes />,
+    <LightBoxesPage />,
     document.getElementById('root')
 );

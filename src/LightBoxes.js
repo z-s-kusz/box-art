@@ -33,7 +33,7 @@ class PixelList extends React.Component {
             boxes: []
         };
         this.clickedOneBox = this.clickedOneBox.bind(this);
-        this.clearSelected = this.clearSelected.bind(this);
+        this.selected = this.selected.bind(this);
         this.setColor = this.setColor.bind(this);
     }
 
@@ -61,16 +61,16 @@ class PixelList extends React.Component {
         });
     }
 
-    clearSelected() {
-        let clearedBoxes = this.state.boxes.map(box => {
+    selected(input) {
+        const newBoxes = this.state.boxes.map(box => {
             return ({
                 id: box.id,
                 color: box.color,
-                selected: false
+                selected: input
             });
         });
         this.setState({
-            boxes: clearedBoxes
+            boxes: newBoxes
         });
     }
 
@@ -102,7 +102,7 @@ class PixelList extends React.Component {
                 <div className='pixels-container'>
                     {boxes}
                 </div>
-                <PixelControls clearSelected={this.clearSelected} setColor={this.setColor} />
+                <PixelControls selected={this.selected} setColor={this.setColor} />
             </div>
         );
     }
@@ -117,13 +117,17 @@ class PixelControls extends React.Component {
             b: 40,
             a: 1
         };
+        this.all = this.all.bind(this);
         this.clear = this.clear.bind(this);
         this.colorChange = this.colorChange.bind(this);
     }
 
-    clear(event) {
-        event.preventDefault();
-        this.props.clearSelected();
+    all() {
+        this.props.selected(true);
+    }
+
+    clear() {
+        this.props.selected(false);
     }
 
     colorChange(color) {
@@ -147,17 +151,23 @@ class PixelControls extends React.Component {
             <div>
                 <SketchPicker onChangeComplete={this.colorChange} color={this.state}/>
                 <button onClick={this.clear}>Clear Selected</button>
+                <button onClick={this.all}>Select All</button>
             </div>
         );
     }
 }
 
-class LightBoxes extends React.Component {
+class LightBoxesPage extends React.Component {
     render () {
         return (
-            <PixelList />
+            <div>
+                <h1>Welcome to a goofy drawing tool: BoxArt</h1>
+                <p>Click some boxes - then choose a color</p>
+                <p>Make a pretty picture then change your browser window size and watch it warp!</p>
+                <PixelList />
+            </div>
         );
     }
 }
 
-export default LightBoxes;
+export default LightBoxesPage;
